@@ -1,15 +1,16 @@
 import sys
 sys.path.insert(0, "../lib")
 import midi
-from lib import Leap
+import pygame
+
+pygame.init()
 
 pattern = midi.read_midifile("369646.mid")
 print(pattern)
 
-controller = Leap.Controller()
-controller.set_policy(Leap.Controller.POLICY_BACKGROUND_FRAMES)
-controller.set_policy(Leap.Controller.POLICY_IMAGES)
-controller.set_policy(Leap.Controller.POLICY_OPTIMIZE_HMD)
+pygame.mixer.music.load("369646.mid")
+pygame.mixer.music.play()
 
-
+while pygame.mixer.music.get_busy():
+    pygame.time.wait(1000)
 print("Hello")
