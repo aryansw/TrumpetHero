@@ -1,7 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="96a3fc10-6e9d-4a52-b915-2add03cabc69" name="Default Changelist" comment="" />
+    <list default="true" id="96a3fc10-6e9d-4a52-b915-2add03cabc69" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/README.mediawiki" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/examples/example_1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/examples/example_2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/mary.mid" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/scripts/mididump.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/scripts/mididumphw.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/scripts/midilisten.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/scripts/midiplay.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/setup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/constants.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/containers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/events.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/fileio.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_alsa/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_alsa/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_alsa/sequencer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_alsa/sequencer_alsa.i" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/CoreMIDI.framework" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/_sequencer_osx.so" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/a.out" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/backup.i" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/cfstring-typemaps-example-1.0.tar.gz" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/cfstring-typemaps-example-1.0/PKG-INFO" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/cfstring-typemaps-example-1.0/example.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/cfstring-typemaps-example-1.0/example.i" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/cfstring-typemaps-example-1.0/setup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/make.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/sequencer_osx.i" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/sequencer_osx.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/sequencer_osx_wrap.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/test" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/test.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/sequencer_osx/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/src/util.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/tests/mary_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python-midi-master/tests/tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/Leap.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/Leap.lib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/Leap.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/LeapCSharp.NET3.5.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/LeapCSharp.NET4.0.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/LeapJava.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/UnityAssets/Plugins/LeapCSharp.NET3.5.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/UnityAssets/Plugins/x86/Leap.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/UnityAssets/Plugins/x86/LeapCSharp.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/UnityAssets/Plugins/x86_64/Leap.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/UnityAssets/Plugins/x86_64/LeapCSharp.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x64/Leap.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x64/Leap.lib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x64/LeapCSharp.NET3.5.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x64/LeapCSharp.NET4.0.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x64/LeapCSharp.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x64/LeapJava.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x64/LeapPython.pyd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x64/msvcp120.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x64/msvcr120.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x86/LeapCSharp.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x86/LeapJava.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x86/LeapPython.pyd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x86/msvcp120.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/x86/msvcr120.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/TrumpetHero.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/TrumpetHero.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/target.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/target.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,17 +90,40 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectId" id="1XrIR2HGkPRLKSjfP6V5yUuUl4u" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Aryan Wadhwani\Documents\TrumpetHero\untitled\src" />
+      <recent name="C:\Users\Aryan Wadhwani\Documents\TrumpetHero\untitled\lib" />
+      <recent name="C:\Users\Aryan Wadhwani\Documents\TrumpetHero\untitled" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
   </component>
   <component name="RunManager">
     <configuration default="true" type="DjangoTestsConfigurationType">
@@ -186,18 +281,6 @@
       </list>
     </recent_temporary>
   </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
-      <list>
-        <serviceView>
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
-      </list>
-    </option>
-  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -208,8 +291,26 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1581797774864</updated>
+      <workItem from="1581799779439" duration="3879000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="223" y="68" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581797885083">
@@ -236,5 +337,8 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="56" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1581797920822" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/TrumpetHero$target.coverage" NAME="target Coverage Results" MODIFIED="1581803449504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
