@@ -7,8 +7,10 @@
 ################################################################################
 
 import sys
-import Leap, thread, time
-from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
+import midi
+from lib import Leap
+#import Leap, thread, time
+#from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
 class SampleListener(Leap.Listener):
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
