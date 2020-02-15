@@ -37,5 +37,51 @@ fingerings = {
                 77:(1, 0, 0)
              }
 
+fingeringNames = {
+                42:'F#',
+                43:'G',
+                44:'G#/Ab',
+                45:'A',
+                46:'A#/Bb',
+                47:'B',
+                48:'C',
+                49:'C#/Db',
+                50:'D',
+                51:'D#/Eb',
+                52:'E',
+                53:'F',
+                54:"F#/Gb",
+                55:'G',
+                56:'G#/Ab',
+                57:'A',
+                58:'A#/Bb',
+                59:'B',
+                60:'C',
+                61:'C#/Db',
+                62:'D',
+                63:'D#/Eb',
+                64:'E',
+                65:'F',
+                66:'F#/Gb',
+                67:'G',
+                68:'G#/Ab',
+                69:'A',
+                70:'A#/Bb',
+                71:'B',
+                72:'C',
+                73:'C#/Db',
+                74:'D',
+                75:'D#/Eb',
+                76:'E',
+                77:'F'
+}
 
-print(fingerings[66])
+def GetNoteAndFingering(number):
+    if number >= 42 and number <= 77:
+        return fingeringNames[number], fingerings[number]
+    elif number < 42:
+        return GetNoteAndFingering(number + 8)
+    elif number > 77:
+        return GetNoteAndFingering(number - 8)
+
+print(GetNoteAndFingering(125))
