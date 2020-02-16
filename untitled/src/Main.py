@@ -15,6 +15,13 @@ YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 AQUA = (0, 255, 255)
 
+class SongObj:
+    def __init__(self, path, type, threshold, name):
+        self.path = path
+        self.type = type
+        self.threshold = threshold
+        self.name = name
+
 DIFFICULTY = "EASY"
 
 size = width, height = 960, 540
@@ -49,6 +56,10 @@ notesGroup = pygame.sprite.Group()
 
 listener = Trumpet.SampleListener()
 controller = Leap.Controller()
+songArray = []
+songArray.append(SongObj("music/MiiTheme.mid", "SmartMusic SoftSynth", 90, "Mii Theme"))
+songArray.append(SongObj("music/bohemian.mid", "Piano", 90, "Bohemian Rhapsody"))
+currentsong = songArray[1]
 
 
 def start() :
@@ -104,6 +115,7 @@ def start() :
         pygame.display.flip()
 
 def song_select():
+    global currentsong
 
     selection = 0
     songList = ["Bohemian Rhapsody", "Let it Go", "Piano Man", "????", "Secret Track"]
@@ -114,24 +126,29 @@ def song_select():
             if event.type == pygame.QUIT: sys.exit()
             if event.type == pygame.KEYDOWN:
                 pressed = pygame.key.get_pressed()
-                if pressed[pygame.K_SPACE]: game()
+                if pressed[pygame.K_SPACE]:
+                    currentsong = songArray[selection]
+                    game()
                 if pressed[pygame.K_ESCAPE]: select = False
                 if pressed[pygame.K_s]:
                     selection += 1
-                    if selection >= len(songList):
+                    if selection >= len(songArray):
                         selection = 0
                 if pressed[pygame.K_w]:
                     selection -= 1
                     if selection < 0:
-                        selection = len(songList) - 1
+                        selection = len(songArray) - 1
 
         screen.blit(songSelectBackground, [0, 0])
         page = selection // 5
-        for i in range(page*5, page*5 + 5):
+        pageLength = 5
+        if len(songArray) - page*5 < 5:
+            pageLength = len(songArray) - page*5
+        for i in range(page*5, page*5 + pageLength):
             if selection % 5 == i:
-                draw_text(screen, songList[i], 30, width / 2, (i+2) * height / 11, "fancy", YELLOW)
+                draw_text(screen, songArray[i].name, 30, width / 2, (i+2) * height / 11, "fancy", YELLOW)
             else:
-                draw_text(screen, songList[i], 30, width / 2, (i+2) * height / 11, "fancy", WHITE)
+                draw_text(screen, songArray[i].name, 30, width / 2, (i+2) * height / 11, "fancy", WHITE)
 
         pygame.display.flip()
 
@@ -144,6 +161,7 @@ def game():
     global notesGroup
     global listener
     global controller
+    global currentsong
     notesGroup.empty()
     notesArray = []
 
@@ -157,24 +175,38 @@ def game():
 
     spacePressed = False
     lIndexDebounceFlag = False
-    tick = 850
+    if DIFFICULTY == "EASY":
+        tick = 850
+    if DIFFICULTY == "MEDIUM":
+        tick = 285
+    if DIFFICULTY == "HARD":
+        tick = 170
 
     controller.add_listener(listener)
     lIndexPressed = False
     rIndexPressed = False
     middlePressed = False
     ringPressed = False
+    hasStarted = False
     score_multiplier = 1
     streak = 0
     score = 0
 
-    song = target.GetNoteSequence()
-    print(song)
+    threshold = 90
+    if DIFFICULTY == "MEDIUM":
+        threshold = 75
+    if DIFFICULTY == "HARD":
+        threshold = 60
+
+    song = target.GetNoteSequence(currentsong.path, currentsong.type, threshold)
     songLength = len(song)
     blockNum = 0
 
-    pygame.mixer.music.load("music/bohemian.mid")
+    pygame.mixer.music.load(currentsong.path)
     pygame.mixer.music.play()
+    while tick > song[blockNum].duration:
+        tick -= song[blockNum].duration
+        blockNum += 1
 
     game = True
     while game:
@@ -188,6 +220,13 @@ def game():
             score_multiplier = 2
         else:
             score_multiplier = 1
+
+        if streak == 0 and hasStarted:
+            pygame.mixer.music.set_volume(0)
+
+        elif streak >= 1:
+            hasStarted = True
+            pygame.mixer.music.set_volume(100)
 
         [lIndexPressed, rIndexPressed, middlePressed, ringPressed, sawLeft] = listener.check_frame(controller)
         if rIndexPressed and not circleThree.pressed:
@@ -343,7 +382,11 @@ def game():
                     createNote("blue")
             blockNum += 1
             tick = 0
+            if blockNum > len(song):
+                game = False
+
     pygame.mixer.music.stop()
+
 
 class dummyObj(pygame.sprite.Sprite):
     def __init__(self, image, x, y, scaleX, scaleY):
