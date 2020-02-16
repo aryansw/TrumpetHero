@@ -8,11 +8,11 @@ import midi
 import pygame
 import Note
 
-def GetNoteSequence():
+def GetNoteSequence(filepath, instrumentToMatch, threshold):
     pygame.init()
 
-    pattern = midi.read_midifile("music/bohemian.mid")
-    # print pattern
+    pattern = midi.read_midifile(filepath)
+    #print pattern
     bpms = []
 
     timeSigCounter = 0
@@ -26,7 +26,8 @@ def GetNoteSequence():
             bpm.ticks = sub.tick
             bpms.append(bpm)
         elif isinstance(sub, midi.events.TimeSignatureEvent):
-            bpms[timeSigCounter].bp = bpms[timeSigCounter].bp * (sub.data[0] / sub.data[1])
+            a = 1
+            # bpms[timeSigCounter].bp = bpms[timeSigCounter].bp * (sub.data[0] / sub.data[1])
             # print(sub.numerator)
             # print(sub.denominator)
             # print(bpms[timeSigCounter].bp)
@@ -40,7 +41,8 @@ def GetNoteSequence():
         for sub in track:
             if isinstance(sub, midi.events.TextMetaEvent) or isinstance(sub, midi.events.TrackNameEvent):
                 instrument = sub.__getattribute__("text")
-                if instrument == 'Piano':
+                print(instrument)
+                if instrument == instrumentToMatch:
                     trackNum = trackCounter
                     flag = 0
                     break
@@ -102,7 +104,7 @@ def GetNoteSequence():
     mid = MidiFile('demo.mid')
 
     for note in notes:
-        if note.duration > 75:
+        if note.duration > threshold:
             # print('REST', restCounter)
             gamenote = Note.GameNotes(restCounter, True, '', 0)
             gamenotes.append(gamenote)
@@ -142,7 +144,7 @@ def GetNoteSequence():
 
 
 
-ns = GetNoteSequence()
+ns = GetNoteSequence("music/MiiTheme.mid", "SmartMusic SoftSynth", 90)
 for note in ns:
     print(note.finger, note.duration)
 
