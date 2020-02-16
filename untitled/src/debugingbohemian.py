@@ -1,6 +1,6 @@
 import midi
 
-pattern = midi.read_midifile("music/fixyou1.mid")
+pattern = midi.read_midifile("music/titanic.mid")
 print pattern
 for track in pattern:
     for sub in track:
