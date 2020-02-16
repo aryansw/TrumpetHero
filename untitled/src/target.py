@@ -9,10 +9,11 @@ import pygame
 
 import Note
 
+
 def GetNoteSequence():
     pygame.init()
 
-    pattern = midi.read_midifile("music/bohemian.mid")
+    pattern = midi.read_midifile("music/bohemian2.mid")
     # print pattern
     bpms = []
 
@@ -41,7 +42,7 @@ def GetNoteSequence():
         for sub in track:
             if isinstance(sub, midi.events.TextMetaEvent) or isinstance(sub, midi.events.TrackNameEvent):
                 instrument = sub.__getattribute__("text")
-                if instrument == 'Piano':
+                if instrument == 'Lead Vox':
                     trackNum = trackCounter
                     flag = 0
                     break
@@ -94,6 +95,8 @@ def GetNoteSequence():
     eot.tick = 1
     track.append(eot)
 
+    midi.write_midifile("demo.mid", new_trumpet)
+
     counter = 0
     restCounter = 0
     totalTicks = 0
@@ -133,37 +136,70 @@ def GetNoteSequence():
                 finalNote = Note.GameNotes(int(gamenote.duration * ms_tick), False, gamenote.note, gamenote.finger)
                 finalGameNotes.append(finalNote)
 
-
     # print('\n')
     # print('Number of Notes', counter)
     # print('Number of Total Ticks', totalTicks)
     # print('Length of Song', seconds)
 
     return finalGameNotes
-
-
-
 ns = GetNoteSequence()
+print("here")
+pygame.mixer.music.load("demo.mid")
+pygame.mixer.music.play()
+pygame.mixer.music.pause()
+counter = 0
 for note in ns:
-    print(note.finger, note.duration)
-
+    counter = counter + 1
+    pygame.mixer.music.unpause()
+    time = note.duration
+    pygame.time.wait(time)
+    pygame.mixer.music.pause()
 """
+=======
+counter = 0
+restCounter = 0
+totalTicks = 0
+
+gamenotes = []
+
+for note in notes:
+    if note.duration > 100:
+        print('REST', restCounter)
+        gamenote = Note.GameNotes(duration=restCounter, isRest=True)
+        gamenotes.append(gamenote)
+        restCounter = 0
+
+        noteDetails = GetNoteAndFingering(note.pitch)
+        gamenote = Note.GameNotes(note.duration, False, note=noteDetails[0], finger=noteDetails[1])
+        gamenotes.append(gamenote)
+        print(noteDetails, note.duration)
+        counter = counter + 1
+    else:
+        restCounter = restCounter + note.duration
+
+    totalTicks = totalTicks + note.duration
+
+print('\n')
+mid = MidiFile('demo.mid')
+mid.type = 1
+seconds = mid.length
+print('Number of Notes', counter)
+print('Number of Total Ticks', totalTicks)
+print('Length of Song', seconds)
+
+ms_tick = seconds * 1000 / totalTicks
+>>>>>>> Stashed changes
 pygame.mixer.music.load("demo.mid")
 pygame.mixer.music.play()
 pygame.mixer.music.pause()
 counter = 0
 for note in gamenotes:
-    print("here ", counter)
     counter = counter + 1
     pygame.mixer.music.unpause()
     time = int(ms_tick * note.duration)
     pygame.time.wait(time)
     pygame.mixer.music.pause()
 """
-
-
-
-
 
 """"
 midi.write_midifile("backingsong.mid", pattern)
