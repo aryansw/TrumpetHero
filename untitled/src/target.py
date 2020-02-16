@@ -58,6 +58,7 @@ def GetNoteSequence(filepath, instrumentToMatch, threshold):
 
     trumpet = pattern[trackNum]
     pattern.remove(trumpet)
+    midi.write_midifile("backing_song.mid", pattern)
     notes = []
 
     for event in trumpet:
@@ -95,9 +96,7 @@ def GetNoteSequence(filepath, instrumentToMatch, threshold):
     eot = midi.EndOfTrackEvent()
     eot.tick = 1
     track.append(eot)
-
     midi.write_midifile("demo.mid", new_trumpet)
-
     counter = 0
     restCounter = 0
     totalTicks = 0
@@ -148,12 +147,13 @@ def GetNoteSequence(filepath, instrumentToMatch, threshold):
 
 
 
-ns = GetNoteSequence("music/ode_to_joy_2.mid", "Bassoon", 100)
+ns = GetNoteSequence("music/mario.mid", "Piano", 100)
 for note in ns:
     pygame.mixer.music.unpause()
     time = note.duration
     pygame.time.wait(time)
     pygame.mixer.music.pause()
+
 """
 =======
 counter = 0
