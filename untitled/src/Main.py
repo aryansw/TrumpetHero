@@ -61,15 +61,15 @@ listener = Trumpet.SampleListener()
 controller = Leap.Controller()
 songArray = []
 songArray.append(SongObj("music/AllStar", "Staff", 50, "All Star"))
-songArray.append(SongObj("music/NeverGonnaGiveYouUp", "NEVERGON", 90, "Never Gonna Give You Up"))
-songArray.append(SongObj("music/BillieJean", "Lead Vox", 50, "Billie Jean"))
-songArray.append(SongObj("music/bohemian", "Piano", 90, "Bohemian Rhapsody"))
-songArray.append(SongObj("music/canon", "Piano", 90, "Canon in D"))
 songArray.append(SongObj("music/highway", "Distorted Guitar", 90, "Highway to Hell"))
-songArray.append(SongObj("music/mario", "Violin", 90, "Mario"))
+songArray.append(SongObj("music/NeverGonnaGiveYouUp", "NEVERGON", 90, "Never Gonna Give You Up"))
 songArray.append(SongObj("music/miitheme", "SmartMusic SoftSynth", 90, "Mii Theme"))
-songArray.append(SongObj("music/pokemon", "Violin", 90, "Pokemon"))
+songArray.append(SongObj("music/BillieJean", "Clav/Brass", 50, "Billie Jean"))
+songArray.append(SongObj("music/mario", "Violin", 90, "Mario"))
+#songArray.append(SongObj("music/pokemon", "Violin", 90, "Pokemon"))
+#songArray.append(SongObj("music/bohemian", "Piano", 90, "Bohemian Rhapsody"))
 #songArray.append(SongObj("music/starwars", "BRASS 1", 50, "Star Wars"))
+#songArray.append(SongObj("music/canon", "Piano", 90, "Canon in D"))
 currentsong = songArray[1]
 
 failsound = pygame.mixer.Sound("music/wrongbuzz.wav")
@@ -78,7 +78,7 @@ def start():
     global DIFFICULTY
 
     logoSprite = pygame.sprite.Group()
-    logoSprite.add(dummyObj(logo, width / 2, height / 2, 525, 375))
+    logoSprite.add(dummyObj(logo, width / 2, height / 3, 525, 375))
     selection = 0
 
     while 1:
@@ -88,22 +88,23 @@ def start():
                 pressed = pygame.key.get_pressed()
                 if pressed[pygame.K_ESCAPE]: sys.exit()
                 if pressed[pygame.K_SPACE] and selection == 0: song_select()
-                if pressed[pygame.K_w]:
-                    selection += 1
-                    if selection >= 2:
-                        selection = 0
+                if pressed[pygame.K_SPACE] and selection == 1: free_play()
                 if pressed[pygame.K_s]:
+                    selection += 1
+                    if selection >= 3:
+                        selection = 0
+                if pressed[pygame.K_w]:
                     selection -= 1
                     if selection < 0:
-                        selection = 1
-                if pressed[pygame.K_d] and selection == 1:
+                        selection = 2
+                if pressed[pygame.K_d] and selection == 2:
                     if DIFFICULTY == "EASY":
                         DIFFICULTY = "MEDIUM"
                     elif DIFFICULTY == "MEDIUM":
                         DIFFICULTY = "HARD"
                     else:
                         DIFFICULTY = "EASY"
-                if pressed[pygame.K_a] and selection == 1:
+                if pressed[pygame.K_a] and selection == 2:
                     if DIFFICULTY == "EASY":
                         DIFFICULTY = "HARD"
                     elif DIFFICULTY == "MEDIUM":
@@ -114,13 +115,17 @@ def start():
         screen.blit(mainMenuBackground, [0, 0])
         logoSprite.draw(screen)
         if selection == 0:
-            draw_text(screen, str("SONG SELECT"), 30, width / 2, 8 * height / 10, "fancy", YELLOW)
+            draw_text(screen, str("SONG SELECT"), 30, width / 2, 9 * height / 12, "fancy", YELLOW)
         else:
-            draw_text(screen, str("SONG SELECT"), 30, width / 2, 8 * height / 10, "fancy", WHITE)
+            draw_text(screen, str("SONG SELECT"), 30, width / 2, 9 * height / 12, "fancy", WHITE)
         if selection == 1:
-            draw_text(screen, str("DIFFICULTY: " + DIFFICULTY), 30, width / 2, 9 * height / 10, "fancy", YELLOW)
+            draw_text(screen, str("FREE PLAY"), 30, width / 2, 10 * height / 12, "fancy", YELLOW)
         else:
-            draw_text(screen, str("DIFFICULTY: " + DIFFICULTY), 30, width / 2, 9 * height / 10, "fancy", WHITE)
+            draw_text(screen, str("FREE PLAY"), 30, width / 2, 10 * height / 12, "fancy", WHITE)
+        if selection == 2:
+            draw_text(screen, str("DIFFICULTY: " + DIFFICULTY), 30, width / 2, 11 * height / 12, "fancy", YELLOW)
+        else:
+            draw_text(screen, str("DIFFICULTY: " + DIFFICULTY), 30, width / 2, 11 * height / 12, "fancy", WHITE)
 
         pygame.display.flip()
 
@@ -348,7 +353,7 @@ def game():
         pygame.display.flip()
         tick += 1
         print time.time() - timeStart
-        if (time.time() - timeStart) >= currentDuration/1000:
+        if (time.time() - timeStart) >= currentDuration/200:
             if time.time() - timeLast >= doubleDelay:
                 if not song[blockNum].isRest:
                     if song[blockNum].finger[0] == 1:
@@ -365,12 +370,182 @@ def game():
                 game = False
             timeStart = time.time()
 
+        if not pygame.mixer.music.get_busy():
+            game = False
+
 
     #channel1.stop()
     #0.stop()
     #backgroundMusic.stop()
     pygame.mixer.music.stop()
 
+def free_play():
+    global score
+    global score_multiplier
+    global score_threshold
+    global streak
+    global notesArray
+    global notesGroup
+    global listener
+    global controller
+    global currentsong
+    notesGroup.empty()
+    notesArray = []
+
+    circles = pygame.sprite.Group()
+    circleOne = CircleObj(1)
+    circleTwo = CircleObj(2)
+    circleThree = CircleObj(3)
+    circles.add(circleOne)
+    circles.add(circleTwo)
+    circles.add(circleThree)
+
+    spacePressed = False
+    lIndexDebounceFlag = False
+
+    controller.add_listener(listener)
+    lIndexPressed = False
+    rIndexPressed = False
+    middlePressed = False
+    ringPressed = False
+    hasStarted = False
+    score_multiplier = 1
+    streak = 0
+    score = 0
+    tick = 0
+
+    game = True
+    jazzMusic = pygame.mixer.Sound("music/jazz.wav")
+    jazzMusic.play()
+    while game:
+        if streak >= 40:
+            score_multiplier = 8
+        elif streak >= 30:
+            score_multiplier = 4
+        elif streak >= 20:
+            score_multiplier = 3
+        elif streak >= 10:
+            score_multiplier = 2
+        else:
+            score_multiplier = 1
+
+        [lIndexPressed, rIndexPressed, middlePressed, ringPressed, sawLeft] = listener.check_frame(controller)
+        if rIndexPressed and not circleThree.pressed:
+            circleThree.press()
+        elif not rIndexPressed and circleThree.pressed:
+            circleThree.release()
+
+        if middlePressed and not circleTwo.pressed:
+            circleTwo.press()
+        elif not middlePressed and circleTwo.pressed:
+            circleTwo.release()
+
+        if ringPressed and not circleOne.pressed:
+            circleOne.press()
+        elif not ringPressed and circleOne.pressed:
+            circleOne.release()
+
+        if lIndexPressed and not lIndexDebounceFlag:
+            lIndexDebounceFlag = True
+            if circleOne.pressed:
+                found = False
+                for note in notesArray:
+                    found = note.checkPressed("red")
+                    if found:
+                        break
+                if not found:
+                    score -= 1
+                    streak = 0
+                    score_multiplier = 1
+                    score_threshold = True
+                    circleOne.miss()
+                else:
+                    circleOne.play()
+
+            if circleTwo.pressed:
+                found = False
+                for note in notesArray:
+                    found = note.checkPressed("green")
+                    if found:
+                        break
+                if not found:
+                    score -= 1
+                    streak = 0
+                    score_multiplier = 1
+                    score_threshold = True
+                    circleTwo.miss()
+                else:
+                    circleTwo.play()
+
+            if circleThree.pressed:
+                found = False
+                for note in notesArray:
+                    found = note.checkPressed("blue")
+                    if found:
+                        break
+                if not found:
+                    score -= 1
+                    streak = 0
+                    score_multiplier = 1
+                    score_threshold = True
+                    circleThree.miss()
+                else:
+                    circleThree.play()
+
+        if not lIndexPressed and lIndexDebounceFlag:
+            if circleOne.pressed:
+                circleOne.press()
+            if circleTwo.pressed:
+                circleTwo.press()
+            if circleThree.pressed:
+                circleThree.press()
+            lIndexDebounceFlag = False
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                controller.remove_listener(listener)
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                pressed = pygame.key.get_pressed()
+                if pressed[pygame.K_ESCAPE]:
+                    game = False
+
+        screen.fill(BLACK)
+        screen.blit(background, [0, 0])
+        notesGroup.update()
+        notesGroup.draw(screen)
+        circles.draw(screen)
+        if score < 0:
+            score = 0
+
+        if not sawLeft:
+            draw_text(screen, "NO LEFT", 50, width / 8, 0, "normal", RED)
+            draw_text(screen, "HAND ", 50, width / 8, 75, "normal", RED)
+        draw_text(screen, "SCORE: " + str(score), 80, width / 2, 0, "normal", BLACK)
+        draw_text(screen, "STREAK: " + str(streak), 50, 7 * width / 8, 0, "normal", AQUA)
+        draw_text(screen, "MULTIPLIER: " + str(score_multiplier) + "x", 40, 7 * width / 8, 75, "normal", AQUA)
+        pygame.display.flip()
+        tick += 1
+
+        if tick == 250:
+            tick = 0
+            diceRoll = random.randint(0,9)
+            if diceRoll == 1 or diceRoll == 2 or diceRoll == 7 or diceRoll == 8 or diceRoll == 0:
+                createNote("red")
+            if diceRoll == 3 or diceRoll == 4 or diceRoll == 7 or diceRoll == 9 or diceRoll == 0:
+                createNote("blue")
+            if diceRoll == 5 or diceRoll == 6 or diceRoll == 8 or diceRoll == 9 or diceRoll == 0:
+                createNote("green")
+
+        if not pygame.mixer.music.get_busy():
+            jazzMusic.play()
+
+
+    jazzMusic.stop()
+    #channel1.stop()
+    #0.stop()
+    #backgroundMusic.stop()
+    pygame.mixer.music.stop()
 
 class dummyObj(pygame.sprite.Sprite):
     def __init__(self, image, x, y, scaleX, scaleY):
