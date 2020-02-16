@@ -34,7 +34,7 @@ class SampleListener(Leap.Listener):
     def on_exit(self, controller):
         print "Exited"
 
-    def on_frame(self, controller):
+    def check_frame(self, controller):
         # Get the most recent frame and report some basic information
         frame = controller.frame()
 
@@ -44,12 +44,17 @@ class SampleListener(Leap.Listener):
         """
         
         pressed = False
+        indexPressed = False
+        ringPressed = False
+        middlePressed = False
         note = ""
-
+        sawLeft = False
         # Get hands
         for hand in frame.hands:
             
             handType = "Left hand" if hand.is_left else "Right hand"
+            if handType == "Left hand":
+                sawLeft = True
             """
             print "  %s, id %d, position: %s" % (
                 handType, hand.id, hand.palm_position)
@@ -102,30 +107,6 @@ class SampleListener(Leap.Listener):
                 elif name == 'Index':
                     indexZone = zone
                     indexDir = dir
-
-                """
-                print "    %s finger, id: %d, length: %fmm, width: %fmm" % (
-                    self.finger_names[finger.type],
-                    finger.id,
-                    finger.length,
-                    finger.width)
-
-                # Get bones
-                for b in range(0, 4):
-                    bone = finger.bone(b)
-                    print "      Bone: %s, start: %s, end: %s, direction: %s" % (
-                        self.bone_names[bone.type],
-                        bone.prev_joint,
-                        bone.next_joint,
-                        bone.direction)
-                """
-            
-            """
-            if abs(ringDis - middleDis > .1):
-                print("Press")
-            else:
-                print("")
-            """
             
             if handType == "Left hand":
                 if handType != 0 and indexDir < -0.5:
@@ -134,9 +115,6 @@ class SampleListener(Leap.Listener):
                 if pressed:
                     print "pressed"
             else:
-                indexPressed = False
-                ringPressed = False
-                middlePressed = False
 
                 if handType != 0 and indexDir < -0.5:
                     indexPressed = True
@@ -154,60 +132,7 @@ class SampleListener(Leap.Listener):
                 if indexPressed:
                     print "index"
 
-
-
-
-        """
-        # Get tools
-        for tool in frame.tools:
-
-            print "  Tool id: %d, position: %s, direction: %s" % (
-                tool.id, tool.tip_position, tool.direction)
-        """
-
-
-        """
-        # Get gestures
-        for gesture in frame.gestures():
-            if gesture.type == Leap.Gesture.TYPE_CIRCLE:
-                circle = CircleGesture(gesture)
-
-                # Determine clock direction using the angle between the pointable and the circle normal
-                if circle.pointable.direction.angle_to(circle.normal) <= Leap.PI/2:
-                    clockwiseness = "clockwise"
-                else:
-                    clockwiseness = "counterclockwise"
-
-                # Calculate the angle swept since the last frame
-                swept_angle = 0
-                if circle.state != Leap.Gesture.STATE_START:
-                    previous_update = CircleGesture(controller.frame(1).gesture(circle.id))
-                    swept_angle =  (circle.progress - previous_update.progress) * 2 * Leap.PI
-
-                print "  Circle id: %d, %s, progress: %f, radius: %f, angle: %f degrees, %s" % (
-                        gesture.id, self.state_names[gesture.state],
-                        circle.progress, circle.radius, swept_angle * Leap.RAD_TO_DEG, clockwiseness)
-
-            if gesture.type == Leap.Gesture.TYPE_SWIPE:
-                swipe = SwipeGesture(gesture)
-                print "  Swipe id: %d, state: %s, position: %s, direction: %s, speed: %f" % (
-                        gesture.id, self.state_names[gesture.state],
-                        swipe.position, swipe.direction, swipe.speed)
-
-            if gesture.type == Leap.Gesture.TYPE_KEY_TAP:
-                keytap = KeyTapGesture(gesture)
-                print "  Key Tap id: %d, %s, position: %s, direction: %s" % (
-                        gesture.id, self.state_names[gesture.state],
-                        keytap.position, keytap.direction )
-
-            if gesture.type == Leap.Gesture.TYPE_SCREEN_TAP:
-                screentap = ScreenTapGesture(gesture)
-                print "  Screen Tap id: %d, %s, position: %s, direction: %s" % (
-                        gesture.id, self.state_names[gesture.state],
-                        screentap.position, screentap.direction )
-            """
-        if not (frame.hands.is_empty and frame.gestures().is_empty):
-            print ""
+        return [pressed, ringPressed, middlePressed, indexPressed, sawLeft]
 
     def state_string(self, state):
         if state == Leap.Gesture.STATE_START:

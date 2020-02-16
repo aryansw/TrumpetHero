@@ -1,5 +1,7 @@
 import sys
-from lib import Leap
+import lib
+
+from Fingerings import GetNoteAndFingering
 
 sys.path.insert(0, "../lib")
 import midi
@@ -10,6 +12,7 @@ import Note
 pygame.init()
 
 pattern = midi.read_midifile("music/bohemian.mid")
+
 bpms = []
 
 timeSigCounter = 0
@@ -18,17 +21,17 @@ for sub in pattern[0]:
     if isinstance(sub, midi.events.SetTempoEvent):
         bpm = Note.bpm()
         bpm.bp = sub.get_bpm()
-        print(bpm.bp)
-        print(sub.get_mpqn())
+        # print(bpm.bp)
+        # print(sub.get_mpqn())
         bpm.ticks = sub.tick
         bpms.append(bpm)
     elif isinstance(sub, midi.events.TimeSignatureEvent):
-      #  bpms[timeSigCounter].bp = bpms[timeSigCounter].bp * (sub.data[0] / sub.data[1])
-        print(sub.numerator)
-        print(sub.denominator)
-#        print(bpms[timeSigCounter].bp)
+        bpms[timeSigCounter].bp = bpms[timeSigCounter].bp * (sub.data[0] / sub.data[1])
+        # print(sub.numerator)
+        # print(sub.denominator)
+        # print(bpms[timeSigCounter].bp)
 
-print pattern
+# print pattern
 
 trackCounter = 0
 trackNum = 0
@@ -96,18 +99,35 @@ eot = midi.EndOfTrackEvent()
 eot.tick = 1
 track.append(eot)
 
+
+counter = 0
+restCounter = 0
+totalTicks = 0
+
+for note in notes:
+    if note.duration > 100:
+        print('REST', restCounter)
+        restCounter = 0
+
+        noteDetails = GetNoteAndFingering(note.pitch)
+        print(noteDetails, note.duration)
+        counter = counter + 1
+    else:
+        restCounter = restCounter + note.duration
+
+    totalTicks = totalTicks + note.duration
+
+print('\n')
+print('Number of Notes', counter)
+print('Number of Total Ticks', totalTicks)
+
 midi.write_midifile("demo.mid", new_trumpet)
 
 pygame.mixer.music.load("demo.mid")
 pygame.mixer.music.play()
-pygame.mixer.music.get_len
-position = 0
-count = 0
+while pygame.mixer.music.get_busy():
+    pygame.time.wait(1000)
 
-for note in notes:
-    print("here")
-    while pygame.mixer.music.get_pos() != position:
-        pygame.time.wait(1)
 """"
 midi.write_midifile("backingsong.mid", pattern)
 
