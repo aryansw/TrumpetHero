@@ -7,7 +7,6 @@ import Note
 pygame.init()
 
 pattern = midi.read_midifile("music/bohemian.mid")
-pattern.make_ticks_abs()
 
 bpms = []
 
@@ -18,18 +17,15 @@ for sub in pattern[0]:
         bpm.ticks = sub.tick
         bpms.append(bpm)
 
-# temporary code
-tracks = midi.Pattern()
+print pattern
 
 trackCounter = 0
 trackNum = 0
 flag = 1
 for track in pattern:
     for sub in track:
-        if isinstance(sub, midi.events.TextMetaEvent):
-            print(sub)
+        if isinstance(sub, midi.events.TextMetaEvent) or isinstance(sub, midi.events.TrackNameEvent):
             instrument = sub.__getattribute__("text")
-            print(instrument)
             if instrument == 'Piano':
                 trackNum = trackCounter
                 flag = 0
@@ -37,19 +33,15 @@ for track in pattern:
     if flag == 0:
         break
     trackCounter = trackCounter + 1
-
-prev_sub_tick = 0
-
+"""
 total_ticks = 0
 for sub in pattern[trackNum]:
     if isinstance(sub, midi.events.NoteOnEvent) or isinstance(sub, midi.events.NoteOffEvent):
-        print(sub)
         total_ticks = sub
+"""
 
-pattern.make_ticks_rel()
 trumpet = pattern[trackNum]
 pattern.remove(trumpet)
-trumpet.make_ticks_rel()
 notes = []
 
 for event in trumpet:
@@ -65,13 +57,10 @@ for event in trumpet:
 new_trumpet = midi.Pattern()
 track = midi.Track()
 new_trumpet.append(track)
-new_trumpet.make_ticks_abs()
 for bpm in bpms:
     tempo_event = midi.events.SetTempoEvent()
     tempo_event.set_bpm(bpm.bp)
-    tempo_event.tick = bpm.ticks
     track.append(tempo_event)
-new_trumpet.make_ticks_rel()
 for note in notes:
     if note.canPlay:
         on = midi.NoteOnEvent()
@@ -82,20 +71,20 @@ for note in notes:
     if not note.canPlay:
         off = midi.NoteOffEvent()
         off.tick = note.duration
+        off.velocity = note.velocity
         off.pitch = note.pitch
         track.append(off)
-
-eot = midi.EndOfTrackEvent(tick=1)
+eot = midi.EndOfTrackEvent()
+eot.tick = 1
 track.append(eot)
 
-midi.write_midifile("demo1.mid", new_trumpet)
+midi.write_midifile("demo.mid", new_trumpet)
 
-pygame.mixer.music.load("demo1.mid")
+pygame.mixer.music.load("demo.mid")
 pygame.mixer.music.play()
-
-print("here")
 while pygame.mixer.music.get_busy():
     pygame.time.wait(1000)
+
 """"
 midi.write_midifile("backingsong.mid", pattern)
 
