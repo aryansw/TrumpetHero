@@ -6,7 +6,6 @@ from Fingerings import GetNoteAndFingering
 sys.path.insert(0, "../lib")
 import midi
 import pygame
-
 import Note
 
 pygame.init()
