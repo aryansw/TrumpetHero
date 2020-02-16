@@ -50,8 +50,8 @@ controller.set_policy(Leap.Controller.POLICY_IMAGES)
 controller.set_policy(Leap.Controller.POLICY_OPTIMIZE_HMD)
 
 
-#pygame.mixer.music.load("369646.mid")
-#pygame.mixer.music.play()
+pygame.mixer.music.load("369646.mid")
+pygame.mixer.music.play()
 
-#while pygame.mixer.music.get_busy():
-#    pygame.time.wait(1000)
+while pygame.mixer.music.get_busy():
+    pygame.time.wait(1000)
