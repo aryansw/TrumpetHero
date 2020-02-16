@@ -10,7 +10,6 @@ import Note
 pygame.init()
 
 pattern = midi.read_midifile("music/bohemian.mid")
-
 bpms = []
 
 timeSigCounter = 0
@@ -24,10 +23,10 @@ for sub in pattern[0]:
         bpm.ticks = sub.tick
         bpms.append(bpm)
     elif isinstance(sub, midi.events.TimeSignatureEvent):
-        bpms[timeSigCounter].bp = bpms[timeSigCounter].bp * (sub.data[0] / sub.data[1])
+      #  bpms[timeSigCounter].bp = bpms[timeSigCounter].bp * (sub.data[0] / sub.data[1])
         print(sub.numerator)
         print(sub.denominator)
-        print(bpms[timeSigCounter].bp)
+#        print(bpms[timeSigCounter].bp)
 
 print pattern
 
@@ -101,9 +100,14 @@ midi.write_midifile("demo.mid", new_trumpet)
 
 pygame.mixer.music.load("demo.mid")
 pygame.mixer.music.play()
-while pygame.mixer.music.get_busy():
-    pygame.time.wait(1000)
+pygame.mixer.music.get_len
+position = 0
+count = 0
 
+for note in notes:
+    print("here")
+    while pygame.mixer.music.get_pos() != position:
+        pygame.time.wait(1)
 """"
 midi.write_midifile("backingsong.mid", pattern)
 
