@@ -38,16 +38,10 @@ class SampleListener(Leap.Listener):
         # Get the most recent frame and report some basic information
         frame = controller.frame()
 
-        """
-        print "Frame id: %d, timestamp: %d, hands: %d, fingers: %d, tools: %d, gestures: %d" % (
-              frame.id, frame.timestamp, len(frame.hands), len(frame.fingers), len(frame.tools), len(frame.gestures()))
-        """
-        
         pressed = False
         indexPressed = False
         ringPressed = False
         middlePressed = False
-        note = ""
         sawLeft = False
         # Get hands
         for hand in frame.hands:
@@ -55,67 +49,28 @@ class SampleListener(Leap.Listener):
             handType = "Left hand" if hand.is_left else "Right hand"
             if handType == "Left hand":
                 sawLeft = True
-            """
-            print "  %s, id %d, position: %s" % (
-                handType, hand.id, hand.palm_position)
-            """
-            
-            # Get the hand's normal vector and direction
-            normal = hand.palm_normal
-            direction = hand.direction
 
-            """
-            # Calculate the hand's pitch, roll, and yaw angles
-            print "  pitch: %f degrees, roll: %f degrees, yaw: %f degrees" % (
-                direction.pitch * Leap.RAD_TO_DEG,
-                normal.roll * Leap.RAD_TO_DEG,
-                direction.yaw * Leap.RAD_TO_DEG)
-            """
-
-            """
-            # Get arm bone
-            arm = hand.arm
-            print "  Arm direction: %s, wrist position: %s, elbow position: %s" % (
-                arm.direction,
-                arm.wrist_position,
-                arm.elbow_position)
-            """
-            pinkyDis = 0
-            
             ringDir = 0
-            ringZone = -1
             middleDir = 0
-            middleZone = -1
             indexDir = 0
-            indexZone = -1
 
             # Get fingers
             for finger in hand.fingers:
                 name = self.finger_names[finger.type]
                 dir = finger.direction[1]
-                zone = finger.touch_zone
 
                 if name == 'Middle':
-                    #print finger.touch_distance
-                    #print finger.touch_zone
-                    #print finger.direction[1]
-                    middleZone = zone
                     middleDir = dir
                 elif name == 'Ring':
-                    ringZone = zone
                     ringDir = dir
                 elif name == 'Index':
-                    indexZone = zone
                     indexDir = dir
             
             if handType == "Left hand":
                 if handType != 0 and indexDir < -0.5:
                     pressed = True
 
-                #if pressed:
-                    #print "pressed"
             else:
-
                 if handType != 0 and indexDir < -0.5:
                     indexPressed = True
                 
@@ -125,14 +80,6 @@ class SampleListener(Leap.Listener):
                 if handType != 0 and middleDir < -0.5:
                     middlePressed = True
 
-                """
-                if middlePressed:
-                    print "middle"
-                if ringPressed:
-                    print "ring"
-                if indexPressed:
-                    print "index"
-                """
 
         return [pressed, ringPressed, middlePressed, indexPressed, sawLeft]
 

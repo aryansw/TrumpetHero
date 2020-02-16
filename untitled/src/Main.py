@@ -6,6 +6,7 @@ import Trumpet
 from os import path
 import random
 import target
+import time
 
 pygame.init()
 
@@ -60,15 +61,15 @@ listener = Trumpet.SampleListener()
 controller = Leap.Controller()
 songArray = []
 songArray.append(SongObj("music/AllStar", "Staff", 50, "All Star"))
+songArray.append(SongObj("music/NeverGonnaGiveYouUp", "NEVERGON", 90, "Never Gonna Give You Up"))
+songArray.append(SongObj("music/BillieJean", "Lead Vox", 50, "Billie Jean"))
 songArray.append(SongObj("music/bohemian", "Piano", 90, "Bohemian Rhapsody"))
 songArray.append(SongObj("music/canon", "Piano", 90, "Canon in D"))
 songArray.append(SongObj("music/highway", "Distorted Guitar", 90, "Highway to Hell"))
 songArray.append(SongObj("music/mario", "Violin", 90, "Mario"))
 songArray.append(SongObj("music/miitheme", "SmartMusic SoftSynth", 90, "Mii Theme"))
 songArray.append(SongObj("music/pokemon", "Violin", 90, "Pokemon"))
-songArray.append(SongObj("music/NeverGonnaGiveYouUp", "NEVERGON", 90, "Never Gonna Give You Up"))
-songArray.append(SongObj("music/starwars", "BRASS 1", 50, "Star Wars"))
-songArray.append(SongObj("music/BillieJean.mid", "Clav/Brass", 50, "Billie Jean"))
+#songArray.append(SongObj("music/starwars", "BRASS 1", 50, "Star Wars"))
 currentsong = songArray[1]
 
 failsound = pygame.mixer.Sound("music/wrongbuzz.wav")
@@ -204,10 +205,13 @@ def game():
     score = 0
 
     threshold = 70
+    doubleDelay = 1
     if DIFFICULTY == "MEDIUM":
         threshold = 60
+        doubleDelay = 0.5
     if DIFFICULTY == "HARD":
         threshold = 50
+        doubleDelay = 0.25
 
     song = target.GetNoteSequence(currentsong.path + ".mid", currentsong.type, threshold)
     blockNum = 0
@@ -230,10 +234,11 @@ def game():
         blockNum += 1
     currentDuration = song[blockNum].duration
 
+    timeStart = time.time()
+    timeLast = time.time()
+
     game = True
     while game:
-        print len(notesArray)
-
         if streak >= 40:
             score_multiplier = 8
         elif streak >= 30:
@@ -264,7 +269,6 @@ def game():
         if lIndexPressed and not lIndexDebounceFlag:
             lIndexDebounceFlag = True
             if circleOne.pressed:
-
                 found = False
                 for note in notesArray:
                     found = note.checkPressed("red")
@@ -337,29 +341,34 @@ def game():
 
         if not sawLeft:
             draw_text(screen, "NO LEFT", 50, width / 8, 0, "normal", RED)
-            draw_text(screen, "HAND " + str(tick), 50, width / 8, 75, "normal", RED)
+            draw_text(screen, "HAND ", 50, width / 8, 75, "normal", RED)
         draw_text(screen, "SCORE: " + str(score), 80, width / 2, 0, "normal", BLACK)
         draw_text(screen, "STREAK: " + str(streak), 50, 7 * width / 8, 0, "normal", AQUA)
         draw_text(screen, "MULTIPLIER: " + str(score_multiplier) + "x", 40, 7 * width / 8, 75, "normal", AQUA)
         pygame.display.flip()
         tick += 1
-        if tick == currentDuration:
-            if not song[blockNum].isRest:
-                if song[blockNum].finger[0] == 1:
-                    createNote("red")
-                if song[blockNum].finger[1] == 1:
-                    createNote("green")
-                if song[blockNum].finger[2] == 1:
-                    createNote("blue")
+        print time.time() - timeStart
+        if (time.time() - timeStart) >= currentDuration/1000:
+            if time.time() - timeLast >= doubleDelay:
+                if not song[blockNum].isRest:
+                    if song[blockNum].finger[0] == 1:
+                        createNote("red")
+                    if song[blockNum].finger[1] == 1:
+                        createNote("green")
+                    if song[blockNum].finger[2] == 1:
+                        createNote("blue")
+                    timeLast = time.time()
             blockNum += 1
             currentDuration = song[blockNum].duration
             tick = 0
-            if blockNum > len(song):
+            if blockNum >= len(song) - 1:
                 game = False
+            timeStart = time.time()
 
-    # channel1.stop()
-    # 0.stop()
-    # backgroundMusic.stop()
+
+    #channel1.stop()
+    #0.stop()
+    #backgroundMusic.stop()
     pygame.mixer.music.stop()
 
 
