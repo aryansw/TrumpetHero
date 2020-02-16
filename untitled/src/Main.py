@@ -57,8 +57,13 @@ notesGroup = pygame.sprite.Group()
 listener = Trumpet.SampleListener()
 controller = Leap.Controller()
 songArray = []
-songArray.append(SongObj("music/MiiTheme.mid", "SmartMusic SoftSynth", 90, "Mii Theme"))
-songArray.append(SongObj("music/bohemian.mid", "Piano", 90, "Bohemian Rhapsody"))
+songArray.append(SongObj("music/bohemian", "Piano", 90, "Bohemian Rhapsody"))
+songArray.append(SongObj("music/canon", "Piano", 90, "Canon in D"))
+songArray.append(SongObj("music/highway", "Distorted Guitar", 90, "Highway to Hell"))
+songArray.append(SongObj("music/mario", "Violin", 90, "Mario"))
+songArray.append(SongObj("music/miitheme", "SmartMusic SoftSynth", 90, "Mii Theme"))
+songArray.append(SongObj("music/pirates", "Piano", 90, "Pirates of the Caribbean"))
+songArray.append(SongObj("music/pokemon", "Violin", 90, "Pokemon"))
 currentsong = songArray[1]
 
 
@@ -118,7 +123,6 @@ def song_select():
     global currentsong
 
     selection = 0
-    songList = ["Bohemian Rhapsody", "Let it Go", "Piano Man", "????", "Secret Track"]
     select = True
 
     while select:
@@ -149,7 +153,7 @@ def song_select():
                 draw_text(screen, songArray[i].name, 30, width / 2, (i+2) * height / 11, "fancy", YELLOW)
             else:
                 draw_text(screen, songArray[i].name, 30, width / 2, (i+2) * height / 11, "fancy", WHITE)
-
+        
         pygame.display.flip()
 
 def game():
@@ -198,12 +202,23 @@ def game():
     if DIFFICULTY == "HARD":
         threshold = 60
 
-    song = target.GetNoteSequence(currentsong.path, currentsong.type, threshold)
+    song = target.GetNoteSequence(currentsong.path + ".mid", currentsong.type, threshold)
     songLength = len(song)
     blockNum = 0
 
-    pygame.mixer.music.load(currentsong.path)
+    #0 = pygame.mixer.Channel(0)
+    #channel1 = pygame.mixer.Channel(1)
+    pygame.mixer.music.load(currentsong.path + ".mid")
     pygame.mixer.music.play()
+    """
+    backgroundMusic = pygame.mixer.Sound(currentsong.path + "back.wav")
+    trumpetMusic = pygame.mixer.Sound(currentsong.path + ".wav")
+    channel1.play(backgroundMusic)
+    channel0.play(trumpetMusic)
+    channel1.set_volume(0.7)
+    channel1.pause()
+    channel1.unpause()
+    """
     while tick > song[blockNum].duration:
         tick -= song[blockNum].duration
         blockNum += 1
@@ -222,11 +237,13 @@ def game():
             score_multiplier = 1
 
         if streak == 0 and hasStarted:
-            pygame.mixer.music.set_volume(0)
-
+            pygame.mixer.music.set_volume(0.5)
+            #channel0.set_volume(0)
+            #channel1.set_volume(0.7)
         elif streak >= 1:
             hasStarted = True
-            pygame.mixer.music.set_volume(100)
+            #channel0.set_volume(1)
+            pygame.mixer.music.set_volume(1)
 
         [lIndexPressed, rIndexPressed, middlePressed, ringPressed, sawLeft] = listener.check_frame(controller)
         if rIndexPressed and not circleThree.pressed:
@@ -310,9 +327,8 @@ def game():
                 if pressed[pygame.K_p]:
                     pygame.mixer.music.pause()
                     game = pause()
-                    pygame.mixer_music.unpause()
-                #if pressed[pygame.K_SPACE]: score = score + 1
                 """
+                #if pressed[pygame.K_SPACE]: score = score + 1
                 if pressed[pygame.K_q]: circleOne.press()
                 if pressed[pygame.K_w]: circleTwo.press()
                 if pressed[pygame.K_e]: circleThree.press()
@@ -385,6 +401,9 @@ def game():
             if blockNum > len(song):
                 game = False
 
+    #channel1.stop()
+    #0.stop()
+    #backgroundMusic.stop()
     pygame.mixer.music.stop()
 
 
