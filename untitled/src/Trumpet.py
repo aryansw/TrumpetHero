@@ -7,8 +7,10 @@
 ################################################################################
 
 import sys
-import Leap, thread, time
-from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
+import midi
+from lib import Leap
+#import Leap, thread, time
+#from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
 class SampleListener(Leap.Listener):
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
@@ -77,32 +79,31 @@ class SampleListener(Leap.Listener):
             """
             pinkyDis = 0
             
-            ringDis = 0
+            ringDir = 0
             ringZone = -1
-            middleDis = 0
+            middleDir = 0
             middleZone = -1
-            indexDis = 0
+            indexDir = 0
             indexZone = -1
 
             # Get fingers
             for finger in hand.fingers:
                 name = self.finger_names[finger.type]
-                dis = finger.touch_distance
+                dir = finger.direction[1]
                 zone = finger.touch_zone
 
                 if name == 'Middle':
                     #print finger.touch_distance
                     #print finger.touch_zone
+                    #print finger.direction[1]
                     middleZone = zone
-                    middleDis = dis
+                    middleDir = dir
                 elif name == 'Ring':
                     ringZone = zone
-                    ringDis = dis
-                elif name == 'Pinky':
-                    pinkyDis = finger.touch_distance
+                    ringDir = dir
                 elif name == 'Index':
                     indexZone = zone
-                    indexDis = finger.touch_distance
+                    indexDir = dir
 
                 """
                 print "    %s finger, id: %d, length: %fmm, width: %fmm" % (
@@ -129,10 +130,8 @@ class SampleListener(Leap.Listener):
             """
             
             if handType == "Left hand":
-                if indexZone == 2 and indexDis > -0.2:
+                if handType != 0 and indexDir < -0.5:
                     pressed = True
-                elif indexZone == 1 and indexDis > 0.4:
-                    pressed
 
                 if pressed:
                     print "pressed"
@@ -141,19 +140,13 @@ class SampleListener(Leap.Listener):
                 ringPressed = False
                 middlePressed = False
 
-                if indexZone == 2 and indexDis > -0.2:
-                    indexPressed = True
-                elif indexZone == 1 and indexDis > 0.4:
+                if handType != 0 and indexDir < -0.5:
                     indexPressed = True
                 
-                if ringZone == 2 and ringDis > -0.2:
-                    ringPressed = True
-                elif ringZone == 1 and ringDis > 0.4:
+                if handType != 0 and ringDir < -0.5:
                     ringPressed = True
                 
-                if middleZone == 2 and middleDis > -0.2:
-                    middlePressed = True
-                elif middleZone == 1 and middleDis > 0.4:
+                if handType != 0 and middleDir < -0.5:
                     middlePressed = True
             
                 if middlePressed:
