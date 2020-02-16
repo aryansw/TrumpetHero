@@ -15,12 +15,14 @@ YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 AQUA = (0, 255, 255)
 
+
 class SongObj:
     def __init__(self, path, type, threshold, name):
         self.path = path
         self.type = type
         self.threshold = threshold
         self.name = name
+
 
 DIFFICULTY = "EASY"
 
@@ -69,8 +71,9 @@ songArray.append(SongObj("music/starwars", "BRASS 1", 50, "Star Wars"))
 songArray.append(SongObj("music/BillieJean.mid", "Clav/Brass", 50, "Billie Jean"))
 currentsong = songArray[1]
 
+failsound = pygame.mixer.Sound("music/wrongbuzz.wav")
 
-def start() :
+def start():
     global DIFFICULTY
 
     logoSprite = pygame.sprite.Group()
@@ -120,6 +123,7 @@ def start() :
 
         pygame.display.flip()
 
+
 def song_select():
     global currentsong
 
@@ -147,16 +151,17 @@ def song_select():
         screen.blit(songSelectBackground, [0, 0])
         page = selection // 5
         pageLength = 5
-        if len(songArray) - page*5 < 5:
-            pageLength = len(songArray) - page*5
-        for i in range(page*5, page*5 + pageLength):
-            n = i - (5*page)
+        if len(songArray) - page * 5 < 5:
+            pageLength = len(songArray) - page * 5
+        for i in range(page * 5, page * 5 + pageLength):
+            n = i - (5 * page)
             if selection % 5 == n:
-                draw_text(screen, songArray[i].name, 30, width / 2, (n+2) * height / 11, "fancy", YELLOW)
+                draw_text(screen, songArray[i].name, 30, width / 2, (n + 2) * height / 11, "fancy", YELLOW)
             else:
-                draw_text(screen, songArray[i].name, 30, width / 2, (n+2) * height / 11, "fancy", WHITE)
+                draw_text(screen, songArray[i].name, 30, width / 2, (n + 2) * height / 11, "fancy", WHITE)
 
         pygame.display.flip()
+
 
 def game():
     global score
@@ -207,8 +212,8 @@ def game():
     song = target.GetNoteSequence(currentsong.path + ".mid", currentsong.type, threshold)
     blockNum = 0
 
-    #0 = pygame.mixer.Channel(0)
-    #channel1 = pygame.mixer.Channel(1)
+    # 0 = pygame.mixer.Channel(0)
+    # channel1 = pygame.mixer.Channel(1)
     pygame.mixer.music.load(currentsong.path + ".mid")
     pygame.mixer.music.play()
     """
@@ -335,7 +340,7 @@ def game():
             draw_text(screen, "HAND " + str(tick), 50, width / 8, 75, "normal", RED)
         draw_text(screen, "SCORE: " + str(score), 80, width / 2, 0, "normal", BLACK)
         draw_text(screen, "STREAK: " + str(streak), 50, 7 * width / 8, 0, "normal", AQUA)
-        draw_text(screen, "MULTIPLIER: " + str(score_multiplier) + "x", 40, 7* width / 8, 75, "normal", AQUA)
+        draw_text(screen, "MULTIPLIER: " + str(score_multiplier) + "x", 40, 7 * width / 8, 75, "normal", AQUA)
         pygame.display.flip()
         tick += 1
         if tick == currentDuration:
@@ -352,9 +357,9 @@ def game():
             if blockNum > len(song):
                 game = False
 
-    #channel1.stop()
-    #0.stop()
-    #backgroundMusic.stop()
+    # channel1.stop()
+    # 0.stop()
+    # backgroundMusic.stop()
     pygame.mixer.music.stop()
 
 
@@ -436,6 +441,7 @@ class CircleObj(pygame.sprite.Sprite):
             self.rect.centerx = width / 2
 
     def miss(self):
+        failsound.play()
         position = self.position
         self.pressed = True
         image = circle_missed
@@ -450,6 +456,7 @@ class CircleObj(pygame.sprite.Sprite):
             self.rect.centerx = width / 2 + 120
         else:
             self.rect.centerx = width / 2
+
 
 class NoteObj(pygame.sprite.Sprite):
     def __init__(self, color):
@@ -467,7 +474,7 @@ class NoteObj(pygame.sprite.Sprite):
             image = note3
         self.image = image
         self.image.set_colorkey(BLACK)
-        #self.image = pygame.transform.scale(image, (75, 75))
+        # self.image = pygame.transform.scale(image, (75, 75))
         self.rect = self.image.get_rect()
         self.rect.centery = 30
         self.rect.centerx = x
@@ -483,18 +490,19 @@ class NoteObj(pygame.sprite.Sprite):
         global score
         global streak
         global score_multiplier
-        global  score_threshold
-        #460 = beginning of target
-        #530 = end of target
+        global score_threshold
+        # 460 = beginning of target
+        # 530 = end of target
         self.click += 1
         if self.click == 2:
-          self.click = 0
-          self.rect.y += self.speedy
+            self.click = 0
+            self.rect.y += self.speedy
         if self.rect.bottom > 600:
             score -= 1
             streak = 0
             score_multiplier = 1
             score_threshold = True
+            failsound.play()
             notesArray.remove(self)
             self.kill()
 
@@ -511,6 +519,7 @@ class NoteObj(pygame.sprite.Sprite):
             return True
 
         return False
+
 
 """
 def pause():
@@ -536,6 +545,7 @@ def pause():
                     paused = False
                     return False
 """
+
 
 def draw_text(surf, text, size, x, y, font, color):
     if font == "normal":
