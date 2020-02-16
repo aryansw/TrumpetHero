@@ -62,7 +62,6 @@ songArray.append(SongObj("music/canon", "Piano", 90, "Canon in D"))
 songArray.append(SongObj("music/highway", "Distorted Guitar", 90, "Highway to Hell"))
 songArray.append(SongObj("music/mario", "Violin", 90, "Mario"))
 songArray.append(SongObj("music/miitheme", "SmartMusic SoftSynth", 90, "Mii Theme"))
-songArray.append(SongObj("music/pirates", "Piano", 90, "Pirates of the Caribbean"))
 songArray.append(SongObj("music/pokemon", "Violin", 90, "Pokemon"))
 currentsong = songArray[1]
 
@@ -149,11 +148,12 @@ def song_select():
         if len(songArray) - page*5 < 5:
             pageLength = len(songArray) - page*5
         for i in range(page*5, page*5 + pageLength):
-            if selection % 5 == i:
-                draw_text(screen, songArray[i].name, 30, width / 2, (i+2) * height / 11, "fancy", YELLOW)
+            n = i - (5*page)
+            if selection % 5 == n:
+                draw_text(screen, songArray[i].name, 30, width / 2, (n+2) * height / 11, "fancy", YELLOW)
             else:
-                draw_text(screen, songArray[i].name, 30, width / 2, (i+2) * height / 11, "fancy", WHITE)
-        
+                draw_text(screen, songArray[i].name, 30, width / 2, (n+2) * height / 11, "fancy", WHITE)
+
         pygame.display.flip()
 
 def game():
