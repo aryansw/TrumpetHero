@@ -21,8 +21,8 @@ for sub in pattern[0]:
     if isinstance(sub, midi.events.SetTempoEvent):
         bpm = Note.bpm()
         bpm.bp = sub.get_bpm()
-        # print(bpm.bp)
-        # print(sub.get_mpqn())
+        print(bpm.bp)
+        print(sub.get_mpqn())
         bpm.ticks = sub.tick
         bpms.append(bpm)
     elif isinstance(sub, midi.events.TimeSignatureEvent):
