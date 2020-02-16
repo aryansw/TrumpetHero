@@ -1,6 +1,6 @@
 import sys
 import lib
-
+from mido import MidiFile
 from Fingerings import GetNoteAndFingering
 
 sys.path.insert(0, "../lib")
@@ -12,7 +12,7 @@ import Note
 pygame.init()
 
 pattern = midi.read_midifile("music/bohemian.mid")
-
+print pattern
 bpms = []
 
 timeSigCounter = 0
@@ -118,15 +118,18 @@ for note in notes:
     totalTicks = totalTicks + note.duration
 
 print('\n')
+mid = MidiFile('demo.mid')
+mid.type = 1
+seconds = mid.length
 print('Number of Notes', counter)
 print('Number of Total Ticks', totalTicks)
-
-midi.write_midifile("demo.mid", new_trumpet)
-
+print('Length of Song', seconds)
 pygame.mixer.music.load("demo.mid")
 pygame.mixer.music.play()
-while pygame.mixer.music.get_busy():
-    pygame.time.wait(1000)
+for note in notes:
+    print ("here!!")
+    while pygame.mixer.music.get_busy():
+        pygame.time.wait(1)
 
 """"
 midi.write_midifile("backingsong.mid", pattern)
