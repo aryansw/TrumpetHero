@@ -112,8 +112,8 @@ class SampleListener(Leap.Listener):
                 if handType != 0 and indexDir < -0.5:
                     pressed = True
 
-                if pressed:
-                    print "pressed"
+                #if pressed:
+                    #print "pressed"
             else:
 
                 if handType != 0 and indexDir < -0.5:
@@ -124,13 +124,15 @@ class SampleListener(Leap.Listener):
                 
                 if handType != 0 and middleDir < -0.5:
                     middlePressed = True
-            
+
+                """
                 if middlePressed:
                     print "middle"
                 if ringPressed:
                     print "ring"
                 if indexPressed:
                     print "index"
+                """
 
         return [pressed, ringPressed, middlePressed, indexPressed, sawLeft]
 

@@ -5,6 +5,7 @@ from lib import Leap
 import Trumpet
 from os import path
 import random
+import target
 
 pygame.init()
 
@@ -12,6 +13,8 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
+AQUA = (0, 255, 255)
+
 DIFFICULTY = "EASY"
 
 size = width, height = 960, 540
@@ -22,6 +25,7 @@ pygame.display.set_caption("Trumpet Hero")
 img_dir = path.join(path.dirname(__file__) + "/images")
 background = pygame.image.load(path.join(img_dir, "background.png")).convert()
 mainMenuBackground = pygame.image.load(path.join(img_dir, "mainMenuBackground.jpg")).convert()
+songSelectBackground = pygame.image.load(path.join(img_dir, "songBackground.jpg")).convert()
 logo = pygame.image.load(path.join(img_dir, "logo.png")).convert()
 
 circle = pygame.image.load(path.join(img_dir, "circle.png")).convert()
@@ -29,9 +33,9 @@ circle_lit = pygame.image.load(path.join(img_dir, "circle_lit.png")).convert()
 circle_played = pygame.image.load(path.join(img_dir, "circle_played.png")).convert()
 circle_missed = pygame.image.load(path.join(img_dir, "circle_missed.png")).convert()
 
-note1 = pygame.image.load(path.join(img_dir, "redNote.png")).convert()
-note2 = pygame.image.load(path.join(img_dir, "greenNote.png")).convert()
-note3 = pygame.image.load(path.join(img_dir, "blueNote.png")).convert()
+note1 = pygame.image.load(path.join(img_dir, "red.png")).convert()
+note2 = pygame.image.load(path.join(img_dir, "green.png")).convert()
+note3 = pygame.image.load(path.join(img_dir, "blue.png")).convert()
 
 font_name = pygame.font.match_font('impact')
 
@@ -46,11 +50,12 @@ notesGroup = pygame.sprite.Group()
 listener = Trumpet.SampleListener()
 controller = Leap.Controller()
 
+
 def start() :
     global DIFFICULTY
 
     logoSprite = pygame.sprite.Group()
-    logoSprite.add(dummyObj(logo, width / 2, height / 3, 450, 350))
+    logoSprite.add(dummyObj(logo, width / 2, height / 2, 525, 375))
     selection = 0
     upDebounce = False
     downDebounce = False
@@ -60,7 +65,8 @@ def start() :
             if event.type == pygame.QUIT: sys.exit()
             if event.type == pygame.KEYDOWN:
                 pressed = pygame.key.get_pressed()
-                if pressed[pygame.K_SPACE]: game()
+                if pressed[pygame.K_SPACE] and selection == 0:
+                    song_select()
                 if pressed[pygame.K_w]:
                     selection += 1
                     if selection >= 2:
@@ -87,13 +93,45 @@ def start() :
         screen.blit(mainMenuBackground, [0, 0])
         logoSprite.draw(screen)
         if selection == 0:
-            draw_text(screen, str("SONG SELECT"), 30, width / 2, 6 * height / 10, "fancy", YELLOW)
+            draw_text(screen, str("SONG SELECT"), 30, width / 2, 8 * height / 10, "fancy", YELLOW)
         else:
-            draw_text(screen, str("SONG SELECT"), 30, width / 2, 6 * height / 10, "fancy", WHITE)
+            draw_text(screen, str("SONG SELECT"), 30, width / 2, 8 * height / 10, "fancy", WHITE)
         if selection == 1:
-            draw_text(screen, str("DIFFICULTY: " + DIFFICULTY), 30, width / 2, 7 * height / 10, "fancy", YELLOW)
+            draw_text(screen, str("DIFFICULTY: " + DIFFICULTY), 30, width / 2, 9 * height / 10, "fancy", YELLOW)
         else:
-            draw_text(screen, str("DIFFICULTY: " + DIFFICULTY), 30, width / 2, 7 * height / 10, "fancy", WHITE)
+            draw_text(screen, str("DIFFICULTY: " + DIFFICULTY), 30, width / 2, 9 * height / 10, "fancy", WHITE)
+
+        pygame.display.flip()
+
+def song_select():
+
+    selection = 0
+    songList = ["Bohemian Rhapsody", "Let it Go", "Piano Man", "????", "Secret Track"]
+    select = True
+
+    while select:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: sys.exit()
+            if event.type == pygame.KEYDOWN:
+                pressed = pygame.key.get_pressed()
+                if pressed[pygame.K_SPACE]: game()
+                if pressed[pygame.K_ESCAPE]: select = False
+                if pressed[pygame.K_s]:
+                    selection += 1
+                    if selection >= len(songList):
+                        selection = 0
+                if pressed[pygame.K_w]:
+                    selection -= 1
+                    if selection < 0:
+                        selection = len(songList) - 1
+
+        screen.blit(songSelectBackground, [0, 0])
+        page = selection // 5
+        for i in range(page*5, page*5 + 5):
+            if selection % 5 == i:
+                draw_text(screen, songList[i], 30, width / 2, (i+2) * height / 11, "fancy", YELLOW)
+            else:
+                draw_text(screen, songList[i], 30, width / 2, (i+2) * height / 11, "fancy", WHITE)
 
         pygame.display.flip()
 
@@ -106,6 +144,9 @@ def game():
     global notesGroup
     global listener
     global controller
+    notesGroup.empty()
+    notesArray = []
+
     circles = pygame.sprite.Group()
     circleOne = CircleObj(1)
     circleTwo = CircleObj(2)
@@ -114,23 +155,29 @@ def game():
     circles.add(circleTwo)
     circles.add(circleThree)
 
-    createNote("blue")
-    createNote("red")
-    createNote("green")
-
     spacePressed = False
     lIndexDebounceFlag = False
-    middleDebounceFlag = False
-    ringDebounceFlag = False
-    tick = 0
+    tick = 850
 
     controller.add_listener(listener)
     lIndexPressed = False
     rIndexPressed = False
     middlePressed = False
     ringPressed = False
+    score_multiplier = 1
+    streak = 0
+    score = 0
 
-    while 1:
+    song = target.GetNoteSequence()
+    print(song)
+    songLength = len(song)
+    blockNum = 0
+
+    pygame.mixer.music.load("music/bohemian.mid")
+    pygame.mixer.music.play()
+
+    game = True
+    while game:
         if streak >= 40:
             score_multiplier = 8
         elif streak >= 30:
@@ -221,8 +268,12 @@ def game():
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 pressed = pygame.key.get_pressed()
-                if pressed[pygame.K_ESCAPE]: pause()
+                if pressed[pygame.K_p]:
+                    pygame.mixer.music.pause()
+                    game = pause()
+                    pygame.mixer_music.unpause()
                 #if pressed[pygame.K_SPACE]: score = score + 1
+                """
                 if pressed[pygame.K_q]: circleOne.press()
                 if pressed[pygame.K_w]: circleTwo.press()
                 if pressed[pygame.K_e]: circleThree.press()
@@ -265,42 +316,34 @@ def game():
                     circleThree.release()
                 if spacePressed and not pressed[pygame.K_SPACE]:
                     spacePressed = False
+            """
         screen.fill(BLACK)
         screen.blit(background, [0, 0])
         notesGroup.update()
         notesGroup.draw(screen)
         circles.draw(screen)
+        if score < 0:
+            score = 0
+
         if not sawLeft:
             draw_text(screen, "NO LEFT", 50, width / 8, 0, "normal", RED)
-            draw_text(screen, "HAND", 50, width / 8, 75, "normal", RED)
+            draw_text(screen, "HAND " + str(tick), 50, width / 8, 75, "normal", RED)
         draw_text(screen, "SCORE: " + str(score), 80, width / 2, 0, "normal", BLACK)
-        draw_text(screen, "STREAK: " + str(streak), 50, 7 * width / 8, 0, "normal", BLACK)
-        draw_text(screen, "MULTIPLIER: " + str(score_multiplier) + "x", 40, 7* width / 8, 75, "normal", BLACK)
+        draw_text(screen, "STREAK: " + str(streak), 50, 7 * width / 8, 0, "normal", AQUA)
+        draw_text(screen, "MULTIPLIER: " + str(score_multiplier) + "x", 40, 7* width / 8, 75, "normal", AQUA)
         pygame.display.flip()
         tick += 1
-        if tick == 500:
-            diceRoll = random.randint(0, 9)
-            if diceRoll < 2:
-                createNote("red")
-            elif diceRoll < 4:
-                createNote("blue")
-            elif diceRoll < 6:
-                createNote("green")
-            elif diceRoll == 6:
-                createNote("red")
-                createNote("blue")
-            elif diceRoll == 7:
-                createNote("red")
-                createNote("green")
-            elif diceRoll == 8:
-                createNote("blue")
-                createNote("green")
-            elif diceRoll == 9:
-                createNote("red")
-                createNote("blue")
-                createNote("green")
-
+        if tick == song[blockNum].duration:
+            if not song[blockNum].isRest:
+                if song[blockNum].finger[0] == 1:
+                    createNote("red")
+                if song[blockNum].finger[1] == 1:
+                    createNote("green")
+                if song[blockNum].finger[2] == 1:
+                    createNote("blue")
+            blockNum += 1
             tick = 0
+    pygame.mixer.music.stop()
 
 class dummyObj(pygame.sprite.Sprite):
     def __init__(self, image, x, y, scaleX, scaleY):
@@ -411,7 +454,7 @@ class NoteObj(pygame.sprite.Sprite):
             image = note3
         self.image = image
         self.image.set_colorkey(BLACK)
-        self.image = pygame.transform.scale(image, (75, 75))
+        #self.image = pygame.transform.scale(image, (75, 75))
         self.rect = self.image.get_rect()
         self.rect.centery = 30
         self.rect.centerx = x
@@ -472,9 +515,13 @@ def pause():
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 pressed = pygame.key.get_pressed()
-                if pressed[pygame.K_ESCAPE]:
+                if pressed[pygame.K_p]:
                     print"resumed"
                     paused = False
+                    return True
+                if pressed[pygame.K_ESCAPE]:
+                    paused = False
+                    return False
 
 def draw_text(surf, text, size, x, y, font, color):
     if font == "normal":
