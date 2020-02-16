@@ -101,13 +101,25 @@ track.append(eot)
 
 
 counter = 0
+restCounter = 0
+totalTicks = 0
+
 for note in notes:
-    if note.duration > 0:
+    if note.duration > 100:
+        print('REST', restCounter)
+        restCounter = 0
+
         noteDetails = GetNoteAndFingering(note.pitch)
         print(noteDetails, note.duration)
         counter = counter + 1
+    else:
+        restCounter = restCounter + note.duration
 
-print(counter)
+    totalTicks = totalTicks + note.duration
+
+print('\n')
+print('Number of Notes', counter)
+print('Number of Total Ticks', totalTicks)
 
 midi.write_midifile("demo.mid", new_trumpet)
 
