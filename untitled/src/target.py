@@ -1,5 +1,7 @@
 import sys
-from lib import Leap
+import lib
+
+from Fingerings import GetNoteAndFingering
 
 sys.path.insert(0, "../lib")
 import midi
@@ -19,17 +21,17 @@ for sub in pattern[0]:
     if isinstance(sub, midi.events.SetTempoEvent):
         bpm = Note.bpm()
         bpm.bp = sub.get_bpm()
-        print(bpm.bp)
-        print(sub.get_mpqn())
+        # print(bpm.bp)
+        # print(sub.get_mpqn())
         bpm.ticks = sub.tick
         bpms.append(bpm)
     elif isinstance(sub, midi.events.TimeSignatureEvent):
         bpms[timeSigCounter].bp = bpms[timeSigCounter].bp * (sub.data[0] / sub.data[1])
-        print(sub.numerator)
-        print(sub.denominator)
-        print(bpms[timeSigCounter].bp)
+        # print(sub.numerator)
+        # print(sub.denominator)
+        # print(bpms[timeSigCounter].bp)
 
-print pattern
+# print pattern
 
 trackCounter = 0
 trackNum = 0
@@ -96,6 +98,16 @@ for note in notes:
 eot = midi.EndOfTrackEvent()
 eot.tick = 1
 track.append(eot)
+
+
+counter = 0
+for note in notes:
+    if note.duration > 0:
+        noteDetails = GetNoteAndFingering(note.pitch)
+        print(noteDetails, note.duration)
+        counter = counter + 1
+
+print(counter)
 
 midi.write_midifile("demo.mid", new_trumpet)
 
