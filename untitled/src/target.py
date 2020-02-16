@@ -99,17 +99,22 @@ eot = midi.EndOfTrackEvent()
 eot.tick = 1
 track.append(eot)
 
-
 counter = 0
 restCounter = 0
 totalTicks = 0
 
+gamenotes = []
+
 for note in notes:
-    if note.duration > 100:
+    if note.duration > 75:
         print('REST', restCounter)
+        gamenote = Note.GameNotes(restCounter, True, '', 0)
+        gamenotes.append(gamenote)
         restCounter = 0
 
         noteDetails = GetNoteAndFingering(note.pitch)
+        gamenote = Note.GameNotes(note.duration, False, noteDetails[0], noteDetails[1])
+        gamenotes.append(gamenote)
         print(noteDetails, note.duration)
         counter = counter + 1
     else:
@@ -124,12 +129,19 @@ seconds = mid.length
 print('Number of Notes', counter)
 print('Number of Total Ticks', totalTicks)
 print('Length of Song', seconds)
+
+ms_tick = seconds * 1000 / totalTicks
 pygame.mixer.music.load("demo.mid")
 pygame.mixer.music.play()
-for note in notes:
-    print ("here!!")
-    while pygame.mixer.music.get_busy():
-        pygame.time.wait(1)
+pygame.mixer.music.pause()
+counter = 0
+for note in gamenotes:
+    print("here ", counter)
+    counter = counter + 1
+    pygame.mixer.music.unpause()
+    time = int(ms_tick * note.duration)
+    pygame.time.wait(time)
+    pygame.mixer.music.pause()
 
 """"
 midi.write_midifile("backingsong.mid", pattern)

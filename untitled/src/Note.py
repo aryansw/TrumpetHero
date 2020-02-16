@@ -17,6 +17,20 @@ class Tune:
         self.duration = duration
         self.canPlay = canPlay
 
+
 class bpm:
     bp = 0.0
     ticks = 0.0
+
+
+class GameNotes:
+    duration = 0.0
+    isRest = False
+    note = ''
+    finger = 0
+
+    def __init__(self, duration, isRest, note, finger):
+        self.note = note
+        self.finger = finger
+        self.isRest = isRest
+        self.duration = duration
