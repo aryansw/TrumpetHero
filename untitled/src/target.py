@@ -62,7 +62,7 @@ def GetNoteSequence(filepath, instrumentToMatch, threshold):
     notes = []
 
     for event in trumpet:
-        print event
+        # print event
         if isinstance(event, midi.events.NoteOnEvent):
             note = Note.Tune(event.pitch, event.velocity, event.tick, True)
             notes.append(note)
@@ -147,7 +147,7 @@ def GetNoteSequence(filepath, instrumentToMatch, threshold):
 
 
 
-ns = GetNoteSequence("music/mario.mid", "Piano", 100)
+ns = GetNoteSequence("music/AllStar.mid", "Staff", 30)
 for note in ns:
     pygame.mixer.music.unpause()
     time = note.duration
