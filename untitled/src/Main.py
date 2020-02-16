@@ -80,8 +80,8 @@ def start() :
             if event.type == pygame.QUIT: sys.exit()
             if event.type == pygame.KEYDOWN:
                 pressed = pygame.key.get_pressed()
-                if pressed[pygame.K_SPACE] and selection == 0:
-                    song_select()
+                if pressed[pygame.K_ESCAPE]: sys.exit()
+                if pressed[pygame.K_SPACE] and selection == 0: song_select()
                 if pressed[pygame.K_w]:
                     selection += 1
                     if selection >= 2:
@@ -324,9 +324,9 @@ def game():
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 pressed = pygame.key.get_pressed()
-                if pressed[pygame.K_p]:
-                    pygame.mixer.music.pause()
-                    game = pause()
+                if pressed[pygame.K_ESCAPE]:
+                    #pygame.mixer.music.pause()
+                    game = False
                 """
                 #if pressed[pygame.K_SPACE]: score = score + 1
                 if pressed[pygame.K_q]: circleOne.press()
@@ -561,7 +561,7 @@ class NoteObj(pygame.sprite.Sprite):
 
         return False
 
-
+"""
 def pause():
     global listener
     global controller
@@ -584,6 +584,7 @@ def pause():
                 if pressed[pygame.K_ESCAPE]:
                     paused = False
                     return False
+"""
 
 def draw_text(surf, text, size, x, y, font, color):
     if font == "normal":
