@@ -146,13 +146,15 @@ def GetNoteSequence(filepath, instrumentToMatch, threshold):
     return finalGameNotes
 
 
-
+"""
 ns = GetNoteSequence("music/BillieJean.mid", "Clav/Brass", 50)
 for note in ns:
     pygame.mixer.music.unpause()
     time = note.duration
     pygame.time.wait(time)
     pygame.mixer.music.pause()
+"""
+
 
 """
 =======
