@@ -1,4 +1,7 @@
 import sys
+from lib import Leap
+
+sys.path.insert(0, "../lib")
 import midi
 import pygame
 
@@ -10,12 +13,21 @@ pattern = midi.read_midifile("music/bohemian.mid")
 
 bpms = []
 
+timeSigCounter = 0
+
 for sub in pattern[0]:
     if isinstance(sub, midi.events.SetTempoEvent):
         bpm = Note.bpm()
         bpm.bp = sub.get_bpm()
+        print(bpm.bp)
+        print(sub.get_mpqn())
         bpm.ticks = sub.tick
         bpms.append(bpm)
+    elif isinstance(sub, midi.events.TimeSignatureEvent):
+        bpms[timeSigCounter].bp = bpms[timeSigCounter].bp * (sub.data[0] / sub.data[1])
+        print(sub.numerator)
+        print(sub.denominator)
+        print(bpms[timeSigCounter].bp)
 
 print pattern
 
@@ -44,18 +56,25 @@ trumpet = pattern[trackNum]
 pattern.remove(trumpet)
 notes = []
 
+prevTick = 0
+
 for event in trumpet:
     if isinstance(event, midi.events.NoteOnEvent):
         note = Note.Tune(event.pitch, event.velocity, event.tick, True)
         notes.append(note)
-    if isinstance(event, midi.events.NoteOffEvent):
+        prevTick = event.tick
+        # print(prevTick)
+    elif isinstance(event, midi.events.NoteOffEvent):
         note = Note.Tune(event.pitch, 0, event.tick, False)
         notes.append(note)
+        prevTick = event.tick
+        # print(prevTick)
 
 # CREATING NEW MIDI FILE
 
 new_trumpet = midi.Pattern()
 track = midi.Track()
+track.make_ticks_rel()
 new_trumpet.append(track)
 for bpm in bpms:
     tempo_event = midi.events.SetTempoEvent()
@@ -88,7 +107,16 @@ while pygame.mixer.music.get_busy():
 """"
 midi.write_midifile("backingsong.mid", pattern)
 
-pygame.mixer.music.load("backingsong.mid")
+#pygame.mixer.init()
+# Load two sounds
+#snd1 = pygame.mixer.Sound('music/369646.mid')
+#snd2 = pygame.mixer.Sound('music/bohemian.mid')
+# Play the sounds; these will play simultaneously
+#snd1.play()
+#snd2.play()
+
+pygame.mixer.music.load("music/369646.mid")
+pygame.mixer.music.load("music/bohemian.mid")
 pygame.mixer.music.play()
 
 while pygame.mixer.music.get_busy():
