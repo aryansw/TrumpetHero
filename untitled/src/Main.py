@@ -5,6 +5,7 @@ from lib import Leap
 import Trumpet
 from os import path
 import random
+import target
 
 pygame.init()
 
@@ -154,13 +155,9 @@ def game():
     circles.add(circleTwo)
     circles.add(circleThree)
 
-    createNote("blue")
-    createNote("red")
-    createNote("green")
-
     spacePressed = False
     lIndexDebounceFlag = False
-    tick = 0
+    tick = 850
 
     controller.add_listener(listener)
     lIndexPressed = False
@@ -170,6 +167,14 @@ def game():
     score_multiplier = 1
     streak = 0
     score = 0
+
+    song = target.GetNoteSequence()
+    print(song)
+    songLength = len(song)
+    blockNum = 0
+
+    pygame.mixer.music.load("music/bohemian.mid")
+    pygame.mixer.music.play()
 
     game = True
     while game:
@@ -264,7 +269,9 @@ def game():
             if event.type == pygame.KEYDOWN:
                 pressed = pygame.key.get_pressed()
                 if pressed[pygame.K_p]:
+                    pygame.mixer.music.pause()
                     game = pause()
+                    pygame.mixer_music.unpause()
                 #if pressed[pygame.K_SPACE]: score = score + 1
                 """
                 if pressed[pygame.K_q]: circleOne.press()
@@ -320,35 +327,23 @@ def game():
 
         if not sawLeft:
             draw_text(screen, "NO LEFT", 50, width / 8, 0, "normal", RED)
-            draw_text(screen, "HAND", 50, width / 8, 75, "normal", RED)
+            draw_text(screen, "HAND " + str(tick), 50, width / 8, 75, "normal", RED)
         draw_text(screen, "SCORE: " + str(score), 80, width / 2, 0, "normal", BLACK)
         draw_text(screen, "STREAK: " + str(streak), 50, 7 * width / 8, 0, "normal", AQUA)
         draw_text(screen, "MULTIPLIER: " + str(score_multiplier) + "x", 40, 7* width / 8, 75, "normal", AQUA)
         pygame.display.flip()
         tick += 1
-        if tick == 500:
-            diceRoll = random.randint(0, 9)
-            if diceRoll < 2:
-                createNote("red")
-            elif diceRoll < 4:
-                createNote("blue")
-            elif diceRoll < 6:
-                createNote("green")
-            elif diceRoll == 6:
-                createNote("red")
-                createNote("blue")
-            elif diceRoll == 7:
-                createNote("red")
-                createNote("green")
-            elif diceRoll == 8:
-                createNote("blue")
-                createNote("green")
-            elif diceRoll == 9:
-                createNote("red")
-                createNote("blue")
-                createNote("green")
-
+        if tick == song[blockNum].duration:
+            if not song[blockNum].isRest:
+                if song[blockNum].finger[0] == 1:
+                    createNote("red")
+                if song[blockNum].finger[1] == 1:
+                    createNote("green")
+                if song[blockNum].finger[2] == 1:
+                    createNote("blue")
+            blockNum += 1
             tick = 0
+    pygame.mixer.music.stop()
 
 class dummyObj(pygame.sprite.Sprite):
     def __init__(self, image, x, y, scaleX, scaleY):
