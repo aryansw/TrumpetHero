@@ -63,6 +63,7 @@ songArray = []
 songArray.append(SongObj("music/AllStar", "Staff", 50, "All Star"))
 songArray.append(SongObj("music/highway", "Distorted Guitar", 90, "Highway to Hell"))
 songArray.append(SongObj("music/NeverGonnaGiveYouUp", "NEVERGON", 90, "Never Gonna Give You Up"))
+songArray.append(SongObj("music/titanic", "PIANO1", 90, "Titanic"))
 songArray.append(SongObj("music/miitheme", "SmartMusic SoftSynth", 90, "Mii Theme"))
 songArray.append(SongObj("music/BillieJean", "Clav/Brass", 50, "Billie Jean"))
 songArray.append(SongObj("music/mario", "Violin", 90, "Mario"))
@@ -352,7 +353,6 @@ def game():
         draw_text(screen, "MULTIPLIER: " + str(score_multiplier) + "x", 40, 7 * width / 8, 75, "normal", AQUA)
         pygame.display.flip()
         tick += 1
-        print time.time() - timeStart
         if (time.time() - timeStart) >= currentDuration/200:
             if time.time() - timeLast >= doubleDelay:
                 if not song[blockNum].isRest:
