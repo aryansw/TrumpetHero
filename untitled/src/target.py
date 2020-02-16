@@ -62,6 +62,7 @@ def GetNoteSequence(filepath, instrumentToMatch, threshold):
     notes = []
 
     for event in trumpet:
+        # print event
         if isinstance(event, midi.events.NoteOnEvent):
             note = Note.Tune(event.pitch, event.velocity, event.tick, True)
             notes.append(note)
@@ -131,9 +132,11 @@ def GetNoteSequence(filepath, instrumentToMatch, threshold):
             if gamenote.isRest:
                 finalNote = Note.GameNotes(int(gamenote.duration * ms_tick), True, '', 0)
                 finalGameNotes.append(finalNote)
+                print(finalNote.finger, finalNote.duration)
             else:
                 finalNote = Note.GameNotes(int(gamenote.duration * ms_tick), False, gamenote.note, gamenote.finger)
                 finalGameNotes.append(finalNote)
+                print(finalNote.finger, finalNote.duration)
 
     # print('\n')
     # print('Number of Notes', counter)
@@ -144,7 +147,12 @@ def GetNoteSequence(filepath, instrumentToMatch, threshold):
 
 
 
-#ns = GetNoteSequence("music/demo.mid", "Piano", 90)
+ns = GetNoteSequence("music/BillieJean.mid", "Clav/Brass", 50)
+for note in ns:
+    pygame.mixer.music.unpause()
+    time = note.duration
+    pygame.time.wait(time)
+    pygame.mixer.music.pause()
 
 """
 =======
@@ -180,7 +188,8 @@ print('Number of Total Ticks', totalTicks)
 print('Length of Song', seconds)
 
 ms_tick = seconds * 1000 / totalTicks
->>>>>>> Stashed changes
+
+
 pygame.mixer.music.load("demo.mid")
 pygame.mixer.music.play()
 pygame.mixer.music.pause()
@@ -195,14 +204,6 @@ for note in gamenotes:
 
 """"
 midi.write_midifile("backingsong.mid", pattern)
-
-#pygame.mixer.init()
-# Load two sounds
-#snd1 = pygame.mixer.Sound('music/369646.mid')
-#snd2 = pygame.mixer.Sound('music/bohemian.mid')
-# Play the sounds; these will play simultaneously
-#snd1.play()
-#snd2.play()
 
 pygame.mixer.music.load("music/369646.mid")
 pygame.mixer.music.load("music/bohemian.mid")

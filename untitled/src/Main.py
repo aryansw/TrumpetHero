@@ -63,6 +63,11 @@ songArray.append(SongObj("music/highway", "Distorted Guitar", 90, "Highway to He
 songArray.append(SongObj("music/mario", "Violin", 90, "Mario"))
 songArray.append(SongObj("music/miitheme", "SmartMusic SoftSynth", 90, "Mii Theme"))
 songArray.append(SongObj("music/pokemon", "Violin", 90, "Pokemon"))
+songArray.append(SongObj("music/pirates", "Piano", 90, "Pirates of the Caribbean"))
+songArray.append(SongObj("music/NeverGonnaGiveYouUp", "NEVERGON", 90, "Never Gonna Give You Up"))
+songArray.append(SongObj("music/AllStar", "Staff", 50, "All Star"))
+songArray.append(SongObj("music/starwars", "BRASS 1", 50, "Star Wars"))
+songArray.append(SongObj("music/BillieJean.mid", "Clav/Brass", 50, "Billie Jean"))
 currentsong = songArray[1]
 
 
