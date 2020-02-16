@@ -125,12 +125,13 @@ def GetNoteSequence():
 
     finalGameNotes = []
     for gamenote in gamenotes:
-        if gamenote.isRest:
-            finalNote = Note.GameNotes(gamenote.duration * ms_tick, True, '', 0)
-            finalGameNotes.append(finalNote)
-        else:
-            finalNote = Note.GameNotes(gamenote.duration * ms_tick, False, gamenote.note, gamenote.finger)
-            finalGameNotes.append(finalNote)
+        if gamenote.duration > 0:
+            if gamenote.isRest:
+                finalNote = Note.GameNotes(int(gamenote.duration * ms_tick), True, '', 0)
+                finalGameNotes.append(finalNote)
+            else:
+                finalNote = Note.GameNotes(int(gamenote.duration * ms_tick), False, gamenote.note, gamenote.finger)
+                finalGameNotes.append(finalNote)
 
 
     # print('\n')
@@ -139,6 +140,12 @@ def GetNoteSequence():
     # print('Length of Song', seconds)
 
     return finalGameNotes
+
+
+
+ns = GetNoteSequence()
+for note in ns:
+    print(note.finger, note.duration)
 
 """
 pygame.mixer.music.load("demo.mid")
