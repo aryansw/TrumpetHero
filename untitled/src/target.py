@@ -144,7 +144,7 @@ def GetNoteSequence(filepath, instrumentToMatch, threshold):
 
 
 
-ns = GetNoteSequence("music/fixyou1.mid", "organ 1", 90)
+ns = GetNoteSequence("music/demo.mid", "Piano", 90)
 
 """
 =======
