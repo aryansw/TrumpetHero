@@ -352,7 +352,7 @@ def game():
         draw_text(screen, "STREAK: " + str(streak), 50, 7 * width / 8, 0, "normal", AQUA)
         draw_text(screen, "MULTIPLIER: " + str(score_multiplier) + "x", 40, 7 * width / 8, 75, "normal", AQUA)
         pygame.display.flip()
-        tick += 1
+        tick += 1 
         if (time.time() - timeStart) >= currentDuration/200:
             if time.time() - timeLast >= doubleDelay:
                 if not song[blockNum].isRest:
